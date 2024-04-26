@@ -2,10 +2,9 @@ package rules
 
 import (
 	"fmt"
-
-	"github.com/terraform-linters/tflint-plugin-sdk/hclext"
-	"github.com/terraform-linters/tflint-plugin-sdk/logger"
+	"github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint-plugin-sdk/tflint"
+	"strings"
 )
 
 // AwsInstanceExampleTypeRule checks whether ...
@@ -20,7 +19,7 @@ func NewAwsInstanceExampleTypeRule() *AwsInstanceExampleTypeRule {
 
 // Name returns the rule name
 func (r *AwsInstanceExampleTypeRule) Name() string {
-	return "aws_instance_example_type"
+	return ""
 }
 
 // Enabled returns whether the rule is enabled by default
@@ -41,33 +40,32 @@ func (r *AwsInstanceExampleTypeRule) Link() string {
 // Check checks whether ...
 func (r *AwsInstanceExampleTypeRule) Check(runner tflint.Runner) error {
 	// This rule is an example to get a top-level resource attribute.
-	resources, err := runner.GetResourceContent("aws_instance", &hclext.BodySchema{
-		Attributes: []hclext.AttributeSchema{
-			{Name: "instance_type"},
-		},
-	}, nil)
+	myFiles, err := runner.GetFiles()
 	if err != nil {
 		return err
 	}
 
-	// Put a log that can be output with `TFLINT_LOG=debug`
-	logger.Debug(fmt.Sprintf("Get %d instances", len(resources.Blocks)))
+	err = checkHashes(myFiles, runner, r)
+	if err != nil {
+		return err
+	}
 
-	for _, resource := range resources.Blocks {
-		attribute, exists := resource.Body.Attributes["instance_type"]
-		if !exists {
-			continue
-		}
+	return nil
+}
 
-		err := runner.EvaluateExpr(attribute.Expr, func (instanceType string) error {
-			return runner.EmitIssue(
-				r,
-				fmt.Sprintf("instance type is %s", instanceType),
-				attribute.Expr.Range(),
-			)
-		}, nil)
-		if err != nil {
-			return err
+func checkHashes(files map[string]*hcl.File, runner tflint.Runner, r *AwsInstanceExampleTypeRule) error {
+	var hclRange hcl.Range
+	for _, value := range files {
+		lines := strings.Split(string(value.Bytes), "\n")
+		for index, line := range lines {
+			if strings.Count(line, "#") > 1 {
+				hclRange = value.Body.MissingItemRange()
+				hclRange.Start.Line = index + 1
+				err := runner.EmitIssue(r, fmt.Sprintf("Multiple hashes in one line. [%s]", line), hclRange)
+				if err != nil {
+					return err
+				}
+			}
 		}
 	}
 

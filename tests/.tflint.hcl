@@ -18,4 +18,6 @@ config {
 
 plugin "template" {
   enabled = true
+  version = "0.0.1"
+  source = "github.com/serenityzn/tflint-ruleset-comment-multiple-hashes"
 }

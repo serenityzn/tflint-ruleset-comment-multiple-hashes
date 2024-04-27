@@ -13,6 +13,7 @@ func main() {
 			Version: "0.0.2",
 			Rules: []tflint.Rule{
 				rules.NewCommentMultipleHashesRule(),
+				rules.NewVariablesRule(),
 			},
 		},
 	})

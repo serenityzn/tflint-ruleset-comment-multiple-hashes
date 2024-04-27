@@ -21,7 +21,7 @@ plugin "template" {
 }
 
 #plugin "comment-multiple-hashes" {
-#  enabled = false
-#  version = "0.0.1"
+#  enabled = true
+#  version = "0.0.2"
 #  source = "github.com/serenityzn/tflint-ruleset-comment-multiple-hashes"
 #}

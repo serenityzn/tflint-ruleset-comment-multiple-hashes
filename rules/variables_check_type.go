@@ -67,8 +67,10 @@ func checkVars(files map[string]*hcl.File, runner tflint.Runner, r *VariablesRul
 	return nil
 }
 
-func checkVariables(runner tflint.Runner, fileName string, value *hcl.File, r *VariablesRule) error {
-	logger.Debug(fmt.Sprintf("(VariablesCheck)FileName is ... %s. Processing", fileName))
+func checkVariables(runner tflint.Runner, fileNameWithPath string, value *hcl.File, r *VariablesRule) error {
+	paths := strings.Split(fileNameWithPath, "/")
+	fileName := paths[len(paths)-1]
+	logger.Debug(fmt.Sprintf("(VariablesCheck) Full fileName is ... %s. Processing. Terraform file is ... %s", fileNameWithPath, fileName))
 	lines := strings.Split(string(value.Bytes), "\n")
 	for index, line := range lines {
 		if strings.Contains(line, "variable \"") && fileName != "variables.tf" {

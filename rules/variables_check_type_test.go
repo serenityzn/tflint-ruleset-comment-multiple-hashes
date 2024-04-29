@@ -15,6 +15,16 @@ func Test_VariablesRuleType(t *testing.T) {
 		Expected helper.Issues
 	}{
 		{
+			Name:     "proper variable placement with long path",
+			FileName: "/tmp/terraform/modules/testmodule/variables.tf",
+			Content: `variable "test" { 
+  type = string
+  default = "test"
+}
+`,
+			Expected: helper.Issues{},
+		},
+		{
 			Name:     "proper variable placement",
 			FileName: "variables.tf",
 			Content: `variable "test" { 

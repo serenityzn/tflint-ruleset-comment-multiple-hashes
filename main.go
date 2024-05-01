@@ -10,7 +10,7 @@ func main() {
 	plugin.Serve(&plugin.ServeOpts{
 		RuleSet: &tflint.BuiltinRuleSet{
 			Name:    "turyachka",
-			Version: "0.1.3",
+			Version: "0.1.4",
 			Rules: []tflint.Rule{
 				rules.NewCommentMultipleHashesRule(),
 				rules.NewVariablesRule(),

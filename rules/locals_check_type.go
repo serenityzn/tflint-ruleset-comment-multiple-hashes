@@ -54,7 +54,7 @@ func checkLocals(files map[string]*hcl.File, runner tflint.Runner, r *LocalsRule
 		if err != nil {
 			return err
 		}
-		logger.Debug(fmt.Sprintf("FileName is ... %s. (locals.tf - skipped)", fileName))
+		logger.Debug(fmt.Sprintf("FileName is ... %s. (checked for locals violations)", fileName))
 	}
 
 	return nil

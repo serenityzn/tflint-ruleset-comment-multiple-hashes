@@ -14,6 +14,7 @@ func main() {
 			Rules: []tflint.Rule{
 				rules.NewCommentMultipleHashesRule(),
 				rules.NewVariablesRule(),
+				rules.NewLocalsRule(),
 			},
 		},
 	})
